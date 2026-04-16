@@ -1420,7 +1420,8 @@ function recordVisit() {
     saveStats(s);
   } else {
     saveStats(s);  // persist visit immediately, location follows async
-    fetch("https://ipwho.is/?fields=country_code,country,city")
+    fetch("https://ipwho.is/?fields=country_code,country,city",
+          { signal: AbortSignal.timeout(5000) })
       .then(r => r.ok ? r.json() : null)
       .then(data => {
         if (!data || data.success === false) return;
