@@ -553,7 +553,7 @@ const STRINGS = {
     footerStats: "إحصاءات الزيارات",
     statsTitle: "إحصاءات الأرشيف",
     statsNoData: "لم تُسجَّل زيارات بعد.",
-    statsDisabled: "تم إيقاف جمع الإحصاءات (Do Not Track أو تم الانسحاب).",
+    statsDisabled: "تم إيقاف جمع الإحصاءات (تم الانسحاب).",
     statsTotalVisits: "إجمالي الزيارات (من هذا المتصفح)",
     statsFirstSeen: "أول زيارة",
     statsLastSeen: "آخر زيارة",
@@ -603,7 +603,7 @@ const STRINGS = {
     footerStats: "Visitor stats",
     statsTitle: "Archive visitor stats",
     statsNoData: "No visits recorded yet.",
-    statsDisabled: "Analytics collection is disabled (Do Not Track or opted out).",
+    statsDisabled: "Analytics collection is disabled (opted out).",
     statsTotalVisits: "Total visits (this browser)",
     statsFirstSeen: "First seen",
     statsLastSeen: "Last seen",
@@ -1319,9 +1319,9 @@ function render() {
       shown on this page when the URL ends with "#stats" or the "visitor
       stats" link in the footer is clicked. No signup required.
 
-   Do Not Track is honoured. Individual visitors can opt out by clicking the
-   opt-out button in the stats panel (or by running
-   localStorage.setItem('muzan_analytics_optout','1') in the console).
+   Individual visitors can opt out by clicking the opt-out button in the
+   stats panel (or by running localStorage.setItem('muzan_analytics_optout','1')
+   in the console).
 */
 
 const GOATCOUNTER_CODE = "";  // e.g. "muzan-archive" once you've created a site
@@ -1330,10 +1330,7 @@ const ANALYTICS_KEY = "muzan_stats_v1";
 const OPTOUT_KEY    = "muzan_analytics_optout";
 
 function analyticsOptedOut() {
-  try { if (localStorage.getItem(OPTOUT_KEY) === "1") return true; } catch (e) {}
-  const dnt = (typeof navigator !== "undefined"
-    ? (navigator.doNotTrack || navigator.msDoNotTrack) : null) || window.doNotTrack;
-  return dnt === "1" || dnt === "yes";
+  try { return localStorage.getItem(OPTOUT_KEY) === "1"; } catch (e) { return false; }
 }
 
 function loadStats() {
