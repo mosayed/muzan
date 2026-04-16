@@ -571,6 +571,23 @@ const STRINGS = {
     suggestConfirm: "شكر\u0627\u064B — تم تسجيل اقتراحك. \u2713",
     footerNote: "أرشيف أصدقاء مزن — يُحدَّث بشكل دوري",
     footerBlog: "مدونتها",
+    footerStats: "إحصاءات الزيارات",
+    statsTitle: "إحصاءات الأرشيف",
+    statsNoData: "لم تُسجَّل زيارات بعد.",
+    statsDisabled: "تم إيقاف جمع الإحصاءات (Do Not Track أو تم الانسحاب).",
+    statsTotalVisits: "إجمالي الزيارات (من هذا المتصفح)",
+    statsFirstSeen: "أول زيارة",
+    statsLastSeen: "آخر زيارة",
+    statsCurrentLocation: "موقعك الحالي",
+    statsTopCountries: "أعلى الدول",
+    statsTopCities: "أعلى المدن",
+    statsTopReferrers: "أعلى المصادر",
+    statsByLang: "حسب اللغة",
+    statsLast30: "آخر ٣٠ يوم",
+    statsNote: "الإحصاءات المعروضة هنا مخزّنة محلي\u064Bا في متصفحك فقط. للإحصاءات التجميعية عبر الزوار، اضبط GoatCounter في رأس السكربت.",
+    statsOptOut: "انسحاب من التتبع",
+    statsOptIn: "إعادة التتبع",
+    statsUnknown: "غير معروف",
     typeLabels: {
       article: "مقال",
       interview: "مقابلة",
@@ -605,6 +622,23 @@ const STRINGS = {
     suggestConfirm: "Thank you \u2014 your suggestion has been recorded. \u2713",
     footerNote: "Friends of Muzan Archive \u2014 updated periodically",
     footerBlog: "Her blog",
+    footerStats: "Visitor stats",
+    statsTitle: "Archive visitor stats",
+    statsNoData: "No visits recorded yet.",
+    statsDisabled: "Analytics collection is disabled (Do Not Track or opted out).",
+    statsTotalVisits: "Total visits (this browser)",
+    statsFirstSeen: "First seen",
+    statsLastSeen: "Last seen",
+    statsCurrentLocation: "Your current location",
+    statsTopCountries: "Top countries",
+    statsTopCities: "Top cities",
+    statsTopReferrers: "Top referrers",
+    statsByLang: "By language",
+    statsLast30: "Last 30 days",
+    statsNote: "The figures here are stored locally in your browser only. For aggregate cross-visitor analytics, configure GoatCounter at the top of the script.",
+    statsOptOut: "Opt out of tracking",
+    statsOptIn: "Opt back in",
+    statsUnknown: "Unknown",
     typeLabels: {
       article: "Article",
       interview: "Interview",
@@ -1178,8 +1212,15 @@ function setLang(lang) {
       <a href="https://www.tni.org/en/profile/muzan-alneel" target="_blank">TNI</a>
       <a href="https://jacobin.com/author/muzan-alneel" target="_blank">Jacobin</a>
       <a href="https://africanarguments.org/author/muzan-alneel/" target="_blank">African Arguments</a>
+      <a href="#stats" id="stats-link">${t("footerStats")}</a>
     </div>
   `;
+  const statsLink = document.getElementById("stats-link");
+  if (statsLink) statsLink.addEventListener("click", e => {
+    e.preventDefault();
+    history.replaceState(null, "", location.pathname + location.search + "#stats");
+    openStatsPanel();
+  });
 
   buildFilterButtons();
   render();
@@ -1279,10 +1320,288 @@ function render() {
 }
 
 /* ══════════════════════════════════════════
+   ANALYTICS
+   ══════════════════════════════════════════
+
+   Basic visitor analytics for the archive.
+
+   1) Cross-visitor analytics (visit counts, countries, referrers, devices)
+      are handled by GoatCounter — a privacy-friendly, cookie-free service
+      with a free tier suitable for memorial / personal sites.
+
+      To enable:
+        a. Sign up at https://www.goatcounter.com/signup  (free, ~1 min)
+        b. Choose a subdomain, e.g. "muzan-archive"
+        c. Set GOATCOUNTER_CODE below to that subdomain
+        d. View the dashboard at https://<code>.goatcounter.com
+
+      Leave it blank ("") to disable the hosted tracker entirely.
+
+   2) A per-browser summary (visits, language, referrer, and an approximate
+      country fetched once via ipwho.is) is also kept in localStorage and
+      shown on this page when the URL ends with "#stats" or the "visitor
+      stats" link in the footer is clicked. No signup required.
+
+   Do Not Track is honoured. Individual visitors can opt out by clicking the
+   opt-out button in the stats panel (or by running
+   localStorage.setItem('muzan_analytics_optout','1') in the console).
+*/
+
+const GOATCOUNTER_CODE = "";  // e.g. "muzan-archive" once you've created a site
+
+const ANALYTICS_KEY = "muzan_stats_v1";
+const OPTOUT_KEY    = "muzan_analytics_optout";
+
+function analyticsOptedOut() {
+  try { if (localStorage.getItem(OPTOUT_KEY) === "1") return true; } catch (e) {}
+  const dnt = (typeof navigator !== "undefined"
+    ? (navigator.doNotTrack || navigator.msDoNotTrack) : null) || window.doNotTrack;
+  return dnt === "1" || dnt === "yes";
+}
+
+function loadStats() {
+  try {
+    const raw = localStorage.getItem(ANALYTICS_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch (e) { return null; }
+}
+
+function saveStats(s) {
+  try { localStorage.setItem(ANALYTICS_KEY, JSON.stringify(s)); } catch (e) {}
+}
+
+function emptyStats() {
+  return {
+    firstSeen: Date.now(), lastSeen: Date.now(), visits: 0,
+    byCountry: {}, byCity: {}, byDay: {}, byReferrer: {}, byLang: {},
+    _cachedLocation: null, _lastLocation: null
+  };
+}
+
+function applyLocationBucket(s, loc) {
+  const key = loc.countryCode || loc.country || "??";
+  s.byCountry[key] = (s.byCountry[key] || 0) + 1;
+  if (loc.city) {
+    const cityKey = loc.city + (loc.countryCode ? ", " + loc.countryCode : "");
+    s.byCity[cityKey] = (s.byCity[cityKey] || 0) + 1;
+  }
+  s._lastLocation = loc;
+}
+
+function recordVisit() {
+  if (analyticsOptedOut()) return;
+  const now = Date.now();
+  const s = loadStats() || emptyStats();
+  s.visits = (s.visits || 0) + 1;
+  s.lastSeen = now;
+
+  const day = new Date(now).toISOString().slice(0, 10);
+  s.byDay = s.byDay || {};
+  s.byDay[day] = (s.byDay[day] || 0) + 1;
+
+  const lang = typeof currentLang !== "undefined" ? currentLang : "?";
+  s.byLang = s.byLang || {};
+  s.byLang[lang] = (s.byLang[lang] || 0) + 1;
+
+  if (document.referrer) {
+    try {
+      const host = new URL(document.referrer).host;
+      if (host && host !== location.host) {
+        s.byReferrer = s.byReferrer || {};
+        s.byReferrer[host] = (s.byReferrer[host] || 0) + 1;
+      }
+    } catch (e) {}
+  }
+
+  const cached = s._cachedLocation;
+  const LOC_TTL = 24 * 60 * 60 * 1000;  // 24h
+  if (cached && cached.fetchedAt && (now - cached.fetchedAt) < LOC_TTL) {
+    applyLocationBucket(s, cached);
+    saveStats(s);
+  } else {
+    saveStats(s);  // persist visit immediately, location follows async
+    fetch("https://ipwho.is/?fields=country_code,country,city",
+          { signal: AbortSignal.timeout(5000) })
+      .then(r => r.ok ? r.json() : null)
+      .then(data => {
+        if (!data || data.success === false) return;
+        const loc = {
+          country: data.country || "",
+          countryCode: data.country_code || "",
+          city: data.city || "",
+          fetchedAt: Date.now()
+        };
+        const s2 = loadStats() || emptyStats();
+        s2._cachedLocation = loc;
+        applyLocationBucket(s2, loc);
+        saveStats(s2);
+        if (document.getElementById("stats-panel")) renderStatsContent();
+      })
+      .catch(() => {});
+  }
+}
+
+function initGoatCounter() {
+  if (!GOATCOUNTER_CODE || analyticsOptedOut()) return;
+  window.goatcounter = { no_onload: false };
+  const s = document.createElement("script");
+  s.async = true;
+  s.dataset.goatcounter = "https://" + GOATCOUNTER_CODE + ".goatcounter.com/count";
+  s.src = "//gc.zgo.at/count.js";
+  document.head.appendChild(s);
+}
+
+/* ── Stats panel ── */
+
+function openStatsPanel() {
+  if (document.getElementById("stats-panel")) return;
+  const overlay = document.createElement("div");
+  overlay.id = "stats-panel";
+  overlay.setAttribute("role", "dialog");
+  overlay.setAttribute("aria-modal", "true");
+  overlay.style.cssText =
+    "position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9999;" +
+    "display:flex;align-items:flex-start;justify-content:center;padding:2rem 1rem;";
+  overlay.innerHTML =
+    '<div id="stats-card" style="background:var(--surface);color:var(--text);' +
+    'border:1px solid var(--border);border-radius:var(--radius-lg);' +
+    'max-width:560px;width:100%;max-height:85vh;overflow:auto;' +
+    'padding:1.25rem 1.5rem;font-family:inherit;">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;gap:1rem;margin-bottom:0.9rem;">' +
+        '<h3 id="stats-heading" style="font-size:1rem;font-weight:600;margin:0;color:var(--text);"></h3>' +
+        '<button id="stats-close" aria-label="Close" style="background:transparent;border:none;font-size:1.4rem;color:var(--text-muted);cursor:pointer;line-height:1;padding:0 6px;">×</button>' +
+      '</div>' +
+      '<div id="stats-content" style="font-size:0.87rem;line-height:1.65;color:var(--text);"></div>' +
+    '</div>';
+  overlay.addEventListener("click", e => { if (e.target === overlay) closeStatsPanel(); });
+  overlay.querySelector("#stats-close").addEventListener("click", closeStatsPanel);
+  document.body.appendChild(overlay);
+  document.getElementById("stats-heading").textContent = t("statsTitle");
+  renderStatsContent();
+}
+
+function closeStatsPanel() {
+  const el = document.getElementById("stats-panel");
+  if (el) el.remove();
+  if (location.hash === "#stats") {
+    history.replaceState(null, "", location.pathname + location.search);
+  }
+}
+
+function fmtDate(ts) {
+  if (!ts) return "—";
+  try {
+    const locale = currentLang === "ar" ? "ar-EG" : "en-GB";
+    return new Date(ts).toLocaleDateString(locale, { year: "numeric", month: "short", day: "numeric" });
+  } catch (e) { return new Date(ts).toISOString().slice(0, 10); }
+}
+
+function topN(obj, n) {
+  return Object.entries(obj || {}).sort((a, b) => b[1] - a[1]).slice(0, n || 5);
+}
+
+function renderStatsContent() {
+  const el = document.getElementById("stats-content");
+  if (!el) return;
+
+  if (analyticsOptedOut()) {
+    el.innerHTML =
+      '<p style="color:var(--text-muted);margin-bottom:0.8rem;">' + t("statsDisabled") + "</p>" +
+      '<button id="stats-optin" style="font-size:0.82rem;padding:6px 14px;border:1px solid var(--accent);border-radius:var(--radius);background:var(--accent-light);color:var(--accent);cursor:pointer;">' +
+      t("statsOptIn") + "</button>";
+    const btn = document.getElementById("stats-optin");
+    if (btn) btn.onclick = () => {
+      try { localStorage.removeItem(OPTOUT_KEY); } catch (e) {}
+      recordVisit();
+      renderStatsContent();
+    };
+    return;
+  }
+
+  const s = loadStats();
+  if (!s || !s.visits) {
+    el.innerHTML = '<p style="color:var(--text-muted);">' + t("statsNoData") + "</p>";
+    return;
+  }
+
+  const unknown = t("statsUnknown");
+  const row = (label, value) =>
+    '<div style="display:flex;justify-content:space-between;gap:1rem;padding:4px 0;border-bottom:1px dashed var(--border);">' +
+      '<span style="color:var(--text-muted);">' + label + '</span>' +
+      '<span style="color:var(--text);font-variant-numeric:tabular-nums;">' + value + '</span>' +
+    '</div>';
+
+  const section = (title, items, emptyMsg) => {
+    if (!items.length) return "";
+    const body = items.map(([k, v]) => row(k || unknown, v)).join("");
+    return '<div style="margin-top:1rem;"><div style="font-size:0.82rem;font-weight:600;color:var(--text);margin-bottom:0.35rem;">' +
+      title + "</div>" + body + "</div>";
+  };
+
+  const locText = s._lastLocation
+    ? [s._lastLocation.city, s._lastLocation.country].filter(Boolean).join(", ") || unknown
+    : unknown;
+
+  const last30 = (() => {
+    const out = [];
+    const today = new Date();
+    for (let i = 29; i >= 0; i--) {
+      const d = new Date(today); d.setDate(today.getDate() - i);
+      const key = d.toISOString().slice(0, 10);
+      out.push([key, (s.byDay && s.byDay[key]) || 0]);
+    }
+    return out;
+  })();
+  const maxDay = Math.max(1, ...last30.map(([, v]) => v));
+  const spark = '<div style="display:flex;align-items:flex-end;gap:2px;height:40px;margin-top:6px;">' +
+    last30.map(([, v]) =>
+      '<div title="' + v + '" style="flex:1;background:var(--accent);opacity:' +
+      (v ? 0.35 + 0.65 * (v / maxDay) : 0.12) + ';height:' +
+      (v ? Math.max(8, Math.round(100 * v / maxDay)) : 4) + '%;border-radius:2px;"></div>'
+    ).join("") + "</div>";
+
+  let html = "";
+  html += row(t("statsTotalVisits"), s.visits);
+  html += row(t("statsFirstSeen"), fmtDate(s.firstSeen));
+  html += row(t("statsLastSeen"), fmtDate(s.lastSeen));
+  html += row(t("statsCurrentLocation"), locText);
+
+  html += section(t("statsLast30"), [], "") + spark;
+
+  html += section(t("statsTopCountries"), topN(s.byCountry, 5));
+  html += section(t("statsTopCities"), topN(s.byCity, 5));
+  html += section(t("statsTopReferrers"), topN(s.byReferrer, 5));
+  html += section(t("statsByLang"), topN(s.byLang, 5));
+
+  html += '<p style="font-size:0.76rem;color:var(--text-faint);margin-top:1.1rem;line-height:1.55;">' +
+    t("statsNote") + "</p>";
+  html += '<div style="margin-top:0.9rem;text-align:end;">' +
+    '<button id="stats-optout" style="font-size:0.78rem;padding:5px 12px;border:1px solid var(--border-strong);border-radius:var(--radius);background:transparent;color:var(--text-muted);cursor:pointer;">' +
+    t("statsOptOut") + "</button></div>";
+
+  el.innerHTML = html;
+  const btn = document.getElementById("stats-optout");
+  if (btn) btn.onclick = () => {
+    try { localStorage.setItem(OPTOUT_KEY, "1"); } catch (e) {}
+    renderStatsContent();
+  };
+}
+
+function initStatsRoute() {
+  const check = () => { if (location.hash === "#stats") openStatsPanel(); };
+  window.addEventListener("hashchange", check);
+  window.addEventListener("keydown", e => { if (e.key === "Escape") closeStatsPanel(); });
+  check();
+}
+
+/* ══════════════════════════════════════════
    INIT
    ══════════════════════════════════════════ */
 
 setLang("ar");
+initGoatCounter();
+recordVisit();
+initStatsRoute();
 </script>
 </body>
 </html>
