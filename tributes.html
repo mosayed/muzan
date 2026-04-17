@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>مزن النيل — كلمات في رحيلها</title>
+<meta name="description" content="كلمات وتأبينات كُتبت بعد رحيل الباحثة والناشطة السودانية مزن النيل (Muzan Alneel)" />
+<style>
+  :root {
+    --bg: #faf9f6;
+    --surface: #ffffff;
+    --border: #e8e4dc;
+    --border-strong: #ccc8be;
+    --text: #1a1916;
+    --text-muted: #6b6860;
+    --text-faint: #9e9b94;
+    --accent: #1a6b4a;
+    --accent-light: #e6f4ed;
+    --blue: #1a4a8a;
+    --blue-light: #e8f0fb;
+    --amber: #7a4d0a;
+    --amber-light: #fdf3e3;
+    --purple: #4a2d8a;
+    --purple-light: #f0ecfb;
+    --font-ar: 'Segoe UI', 'Tahoma', 'Arial', sans-serif;
+    --font-en: 'Georgia', 'Times New Roman', serif;
+    --radius: 6px;
+    --radius-lg: 10px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #141412;
+      --surface: #1e1d1a;
+      --border: #2e2c28;
+      --border-strong: #3e3c37;
+      --text: #f0ede6;
+      --text-muted: #a0998f;
+      --text-faint: #6b6860;
+      --accent: #4db88a;
+      --accent-light: #0f3324;
+      --blue: #6ba3e8;
+      --blue-light: #0f2040;
+      --amber: #e8a83a;
+      --amber-light: #3a2608;
+      --purple: #a08ae8;
+      --purple-light: #1e1540;
+    }
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--font-ar);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  a { color: var(--blue); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  .page {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  /* ── Lang Toggle ── */
+  .lang-bar {
+    display: flex;
+    justify-content: flex-end;
+    padding: 0.75rem 0 0;
+  }
+
+  [dir="ltr"] .lang-bar { justify-content: flex-start; }
+
+  .lang-toggle {
+    display: inline-flex;
+    border: 1px solid var(--border-strong);
+    border-radius: 99px;
+    overflow: hidden;
+    font-size: 0.82rem;
+  }
+
+  .lang-btn {
+    padding: 5px 16px;
+    cursor: pointer;
+    border: none;
+    background: var(--surface);
+    color: var(--text-muted);
+    font-family: var(--font-ar);
+    font-size: 0.82rem;
+    transition: all 0.15s;
+  }
+
+  .lang-btn:first-child {
+    border-inline-end: 1px solid var(--border-strong);
+  }
+
+  .lang-btn.active {
+    background: var(--accent);
+    color: #fff;
+    font-weight: 600;
+  }
+
+  /* ── Header ── */
+  .site-header {
+    border-bottom: 1px solid var(--border);
+    padding: 2rem 0 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .header-rule {
+    width: 48px;
+    height: 3px;
+    background: var(--accent);
+    border-radius: 2px;
+    margin-bottom: 1.5rem;
+  }
+
+  .site-header h1 {
+    font-size: clamp(1.6rem, 4vw, 2.2rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--text);
+    line-height: 1.2;
+    margin-bottom: 0.25rem;
+  }
+
+  .site-header .en-name {
+    font-family: var(--font-en);
+    font-size: clamp(1rem, 2.5vw, 1.3rem);
+    font-style: italic;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+    display: block;
+  }
+
+  .subtitle {
+    font-size: 1.05rem;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+    line-height: 1.6;
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+    color: var(--accent);
+    font-weight: 500;
+  }
+
+  .back-link:hover { text-decoration: underline; }
+
+  /* ── Tribute cards ── */
+  .section-heading {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 0;
+    margin-top: 2.5rem;
+    font-family: var(--font-en);
+  }
+
+  .tribute {
+    padding: 1.1rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .tribute:last-child { border-bottom: none; }
+
+  .tribute-source {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 4px;
+  }
+
+  .tribute-source a {
+    flex: 1;
+    min-width: 200px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--blue);
+    line-height: 1.45;
+  }
+
+  .tribute-tag {
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 3px 9px;
+    border-radius: 99px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-top: 3px;
+  }
+
+  .tag-obituary { background: var(--purple-light); color: var(--purple); }
+  .tag-statement { background: var(--accent-light); color: var(--accent); }
+  .tag-personal { background: var(--blue-light); color: var(--blue); }
+  .tag-social { background: var(--amber-light); color: var(--amber); }
+
+  .lang-badge {
+    font-size: 0.65rem;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 99px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-top: 4px;
+    background: var(--border);
+    color: var(--text-muted);
+    border: 1px solid var(--border-strong);
+  }
+
+  .tribute-author {
+    font-size: 0.8rem;
+    color: var(--text-faint);
+    margin-bottom: 4px;
+  }
+
+  .tribute-author strong {
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+
+  .tribute-desc {
+    font-size: 0.87rem;
+    color: var(--text-muted);
+    line-height: 1.65;
+  }
+
+  .tribute-date {
+    font-size: 0.78rem;
+    color: var(--text-faint);
+    font-family: var(--font-en);
+    margin-top: 4px;
+  }
+
+  /* ── Call to action ── */
+  .cta-box {
+    margin-top: 2.5rem;
+    padding: 1.25rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+  }
+
+  .cta-box p {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    line-height: 1.65;
+  }
+
+  .cta-box a {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  /* ── Footer ── */
+  .site-footer {
+    border-top: 1px solid var(--border);
+    padding: 1.5rem 0 3rem;
+    margin-top: 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .footer-note {
+    font-size: 0.8rem;
+    color: var(--text-faint);
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .footer-links a {
+    font-size: 0.8rem;
+    color: var(--text-faint);
+  }
+
+  .footer-links a:hover { color: var(--accent); }
+
+  /* ── English mode ── */
+  [dir="ltr"] body { font-family: var(--font-en); }
+  [dir="ltr"] .lang-btn { font-family: var(--font-en); }
+
+  /* ── Responsive ── */
+  @media (max-width: 600px) {
+    .site-header { padding: 1.5rem 0 1.5rem; }
+    .tribute-source a { font-size: 0.95rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- Language Toggle -->
+  <div class="lang-bar">
+    <div class="lang-toggle">
+      <button class="lang-btn active" data-lang="ar" onclick="setLang('ar')">عربي</button>
+      <button class="lang-btn" data-lang="en" onclick="setLang('en')">English</button>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="header-rule"></div>
+    <h1 id="header-name"></h1>
+    <span class="en-name" id="header-subname"></span>
+    <p class="subtitle" id="page-subtitle"></p>
+    <a class="back-link" id="back-link" href="./">
+      <span id="back-arrow">→</span>
+      <span id="back-text"></span>
+    </a>
+  </header>
+
+  <!-- Tributes list -->
+  <div id="tributes-list"></div>
+
+  <!-- CTA -->
+  <div class="cta-box" id="cta-box"></div>
+
+  <!-- Footer -->
+  <footer class="site-footer" id="site-footer"></footer>
+
+</div>
+
+<script>
+let currentLang = "ar";
+
+const STRINGS = {
+  ar: {
+    pageTitle: "مزن النيل — كلمات في رحيلها",
+    headerName: "مزن النيل",
+    headerSubname: "Muzan Alneel",
+    subtitle: "كلمات وتأبينات كُتبت بعد رحيل مزن في 15 أبريل 2026.",
+    backText: "العودة إلى الأرشيف",
+    sectionObituaries: "تأبينات",
+    sectionStatements: "بيانات",
+    sectionPersonal: "كلمات",
+    ctaText: 'إن كنت تعرف كلمة أو تأبينًا لم يُذكر هنا — <a href="./#suggest-box">أرسله عبر صندوق الاقتراحات</a>.',
+    footerNote: "أرشيف أصدقاء مزن — يُحدَّث بشكل دوري",
+    footerBlog: "مدونتها",
+    typeLabels: {
+      obituary: "تأبين",
+      statement: "بيان",
+      personal: "كلمة",
+    },
+    langBadge: { en: "EN", ar: "عربي" },
+  },
+  en: {
+    pageTitle: "Muzan Alneel — In Her Memory",
+    headerName: "Muzan Alneel",
+    headerSubname: "مزن النيل",
+    subtitle: "Words written after Muzan\u2019s passing on 15 April 2026.",
+    backText: "Back to the archive",
+    sectionObituaries: "Obituaries",
+    sectionStatements: "Statements",
+    sectionPersonal: "Personal words",
+    ctaText: 'Know of something not listed here? <a href="./#suggest-box">Send it through the suggestion box</a>.',
+    footerNote: "Friends of Muzan Archive \u2014 updated periodically",
+    footerBlog: "Her blog",
+    typeLabels: {
+      obituary: "Obituary",
+      statement: "Statement",
+      personal: "Personal",
+    },
+    langBadge: { en: "EN", ar: "AR" },
+  }
+};
+
+function t(key) { return STRINGS[currentLang][key]; }
+
+/*
+ * ── TRIBUTE DATA ──
+ * Each entry:
+ *   titleAr / titleEn  — display title
+ *   authorAr / authorEn — who wrote it
+ *   descAr / descEn    — one-line paraphrase (NOT a quote)
+ *   url                — link to original
+ *   date               — publication date string
+ *   type               — obituary | statement | personal | social
+ *   sourceLang         — "en" or "ar"
+ *   section            — "obituaries" | "statements" | "personal"
+ */
+const TRIBUTES = [
+  /* ── Obituaries ── */
+  {
+    titleEn: "Remembering Muzan Alneel",
+    titleAr: "في ذكرى مزن النيل",
+    authorEn: "Anne Alexander \u2014 Socialist Worker",
+    authorAr: "آن ألكسندر — Socialist Worker",
+    descEn: "An obituary by a colleague who knew Muzan over five years of interviews and conversations about the Sudanese revolution, published the day after her death.",
+    descAr: "تأبين من زميلة عرفت مزن على مدار خمس سنوات من الحوارات حول الثورة السودانية، نُشر في اليوم التالي لرحيلها.",
+    url: "https://socialistworker.co.uk/obituaries/remembering-muzan-alneel-her-voice-carried-the-message-of-sudans-revolution-to-the-wider-world/",
+    date: "16 April 2026",
+    type: "obituary",
+    sourceLang: "en",
+    section: "obituaries"
+  },
+
+  /* ── Statements ── */
+  {
+    titleEn: "MENA Solidarity Network",
+    titleAr: "شبكة تضامن الشرق الأوسط وشمال أفريقيا",
+    authorEn: "MENA Solidarity Network",
+    authorAr: "MENA Solidarity Network",
+    descEn: "A statement from the network Muzan contributed research to, including chapters in their pamphlet on Sudan\u2019s revolutionary movements.",
+    descAr: "بيان من الشبكة التي ساهمت فيها مزن بأبحاث، منها فصول في كتيبهم عن الحركات الثورية السودانية.",
+    url: "https://menasolidaritynetwork.com/2026/04/15/32218/",
+    date: "15 April 2026",
+    type: "statement",
+    sourceLang: "en",
+    section: "statements"
+  },
+  {
+    titleEn: "TIMEP",
+    titleAr: "معهد التحرير لسياسات الشرق الأوسط",
+    authorEn: "The Tahrir Institute for Middle East Policy",
+    authorAr: "معهد التحرير لسياسات الشرق الأوسط (TIMEP)",
+    descEn: "A statement from the institute where Muzan was a nonresident fellow in 2021\u20132022.",
+    descAr: "بيان من المعهد الذي كانت فيه مزن زميلة غير مقيمة في 2021\u20132022.",
+    url: "https://x.com/TimepDC/status/2044408010038989308",
+    date: "15 April 2026",
+    type: "statement",
+    sourceLang: "en",
+    section: "statements"
+  },
+  {
+    titleEn: "Drop Site News",
+    titleAr: "Drop Site News",
+    authorEn: "Drop Site News",
+    authorAr: "Drop Site News",
+    descEn: "A note marking Muzan\u2019s passing on the third anniversary of the war in Sudan.",
+    descAr: "كلمة بمناسبة رحيل مزن في الذكرى الثالثة لاندلاع الحرب في السودان.",
+    url: "https://x.com/DropSiteNews/status/2044610261336670246",
+    date: "15 April 2026",
+    type: "statement",
+    sourceLang: "en",
+    section: "statements"
+  },
+
+  /* ── Personal words ── */
+  {
+    titleEn: "Timothy E Kaldas",
+    titleAr: "تيموثي كلداس",
+    authorEn: "Former colleague at TIMEP",
+    authorAr: "زميل سابق في معهد التحرير",
+    descEn: "",
+    descAr: "",
+    url: "https://x.com/tekaldas/status/2044408010038989308",
+    date: "15 April 2026",
+    type: "personal",
+    sourceLang: "en",
+    section: "personal"
+  },
+  {
+    titleEn: "Shireen Akram-Boshar",
+    titleAr: "شيرين أكرم بشار",
+    authorEn: "Activist and writer",
+    authorAr: "ناشطة وكاتبة",
+    descEn: "",
+    descAr: "",
+    url: "https://x.com/ShireenNajla/status/2044451070986932495",
+    date: "15 April 2026",
+    type: "personal",
+    sourceLang: "en",
+    section: "personal"
+  },
+  {
+    titleEn: "promise li",
+    titleAr: "promise li",
+    authorEn: "Friend and comrade",
+    authorAr: "صديق ورفيق",
+    descEn: "",
+    descAr: "",
+    url: "https://x.com/promise__li/status/2044445645822734567",
+    date: "15 April 2026",
+    type: "personal",
+    sourceLang: "en",
+    section: "personal"
+  },
+];
+
+/* ══════════════════════════════════════════
+   RENDER
+   ══════════════════════════════════════════ */
+
+function setLang(lang) {
+  currentLang = lang;
+  const html = document.documentElement;
+  html.lang = lang;
+  html.dir = lang === "ar" ? "rtl" : "ltr";
+
+  document.title = t("pageTitle");
+
+  document.querySelectorAll(".lang-btn").forEach(btn => {
+    btn.classList.toggle("active", btn.dataset.lang === lang);
+  });
+
+  document.getElementById("header-name").textContent = t("headerName");
+  document.getElementById("header-subname").textContent = t("headerSubname");
+  document.getElementById("page-subtitle").textContent = t("subtitle");
+  document.getElementById("back-text").textContent = t("backText");
+  document.getElementById("back-arrow").textContent = lang === "ar" ? "→" : "←";
+
+  // CTA
+  document.getElementById("cta-box").innerHTML = `<p>${t("ctaText")}</p>`;
+
+  // Footer
+  document.getElementById("site-footer").innerHTML = `
+    <span class="footer-note">${t("footerNote")}</span>
+    <div class="footer-links">
+      <a href="./">${lang === "ar" ? "الأرشيف" : "Archive"}</a>
+      <a href="https://twitter.com/MuzanAlneel" target="_blank">Twitter</a>
+      <a href="https://www.facebook.com/leenlanazum" target="_blank">Facebook</a>
+      <a href="https://muzankatabat.wordpress.com/" target="_blank">${t("footerBlog")}</a>
+    </div>
+  `;
+
+  renderTributes();
+}
+
+function renderTributes() {
+  const isAr = currentLang === "ar";
+  const labels = t("typeLabels");
+  const badges = t("langBadge");
+
+  const sections = [
+    { key: "obituaries", heading: t("sectionObituaries") },
+    { key: "statements", heading: t("sectionStatements") },
+    { key: "personal", heading: t("sectionPersonal") },
+  ];
+
+  let html = "";
+
+  sections.forEach(sec => {
+    const items = TRIBUTES.filter(tr => tr.section === sec.key);
+    if (!items.length) return;
+
+    html += `<div class="section-heading">${sec.heading}</div>`;
+
+    items.forEach(tr => {
+      const title = isAr ? (tr.titleAr || tr.titleEn) : (tr.titleEn || tr.titleAr);
+      const author = isAr ? (tr.authorAr || tr.authorEn) : (tr.authorEn || tr.authorAr);
+      const desc = isAr ? (tr.descAr || tr.descEn) : (tr.descEn || tr.descAr);
+      const srcBadge = badges[tr.sourceLang];
+
+      html += `
+        <div class="tribute">
+          <div class="tribute-source">
+            <a href="${tr.url}" target="_blank" rel="noopener">${title}</a>
+            <span class="lang-badge">${srcBadge}</span>
+            <span class="tribute-tag tag-${tr.type}">${labels[tr.type]}</span>
+          </div>
+          <div class="tribute-author"><strong>${author}</strong></div>
+          <div class="tribute-desc">${desc}</div>
+          <div class="tribute-date">${tr.date}</div>
+        </div>`;
+    });
+  });
+
+  document.getElementById("tributes-list").innerHTML = html;
+}
+
+/* ── Init ── */
+setLang("ar");
+</script>
+</body>
+</html>
