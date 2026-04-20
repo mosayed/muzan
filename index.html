@@ -191,6 +191,11 @@
     text-decoration: none;
   }
 
+  #tributes-link a {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
   .badge-total {
     display: inline-flex;
     align-items: center;
@@ -505,6 +510,7 @@
         <p id="header-dates" style="font-size:0.82rem;color:var(--text-faint);margin-bottom:1rem;font-family:var(--font-en);letter-spacing:0.01em;"></p>
         <p class="bio" id="header-bio"></p>
         <div class="meta-row" id="header-meta"></div>
+        <p id="tributes-link" style="margin-top:1rem;font-size:0.85rem;"></p>
       </div>
 
     </div>
@@ -558,6 +564,7 @@ const STRINGS = {
     timeRange: "النطاق الزمني:",
     timeRangeVal: "2013\u20132026",
     blog: "مدونة:",
+    tributesLink: 'اقرأ <a href="tributes.html">كلمات في رحيلها</a> ←',
     disclaimer: 'هذا الأرشيف مبادرة من أصدقاء مزن للحفاظ على كتاباتها وإتاحتها. إن كنت تعرف مادة غير مُدرجة، يسعدنا إضافتها — استخدم <a href="#suggest-box">صندوق الاقتراحات أدناه</a>.',
     searchPlaceholder: "ابحث في العناوين والمنابر والمواضيع\u2026",
     filterLabel: "تصفية:",
@@ -592,6 +599,7 @@ const STRINGS = {
     timeRange: "Time span:",
     timeRangeVal: "2013\u20132026",
     blog: "Blog:",
+    tributesLink: 'Read <a href="tributes.html">words in her memory</a> \u2192',
     disclaimer: 'This archive is maintained by friends of Muzan to preserve and share her work. If you know of an unlisted piece, we would love to add it \u2014 use the <a href="#suggest-box">suggestion box below</a>.',
     searchPlaceholder: "Search titles, outlets, topics\u2026",
     filterLabel: "Filter:",
@@ -1296,6 +1304,9 @@ function setLang(lang) {
     <span class="meta-item">Facebook: <a href="https://www.facebook.com/leenlanazum" target="_blank">${lang === "ar" ? "مزن النيل" : "Muzan Alneel"}</a></span>
     <span class="meta-item">${t("blog")} <a href="https://muzankatabat.wordpress.com/" target="_blank">${lang === "ar" ? "Muzan كـتبـت" : "Muzan Katabat"}</a></span>
   `;
+
+  // Tributes link
+  document.getElementById("tributes-link").innerHTML = t("tributesLink");
 
   // Disclaimer
   const disclaimerEl = document.getElementById("disclaimer");
